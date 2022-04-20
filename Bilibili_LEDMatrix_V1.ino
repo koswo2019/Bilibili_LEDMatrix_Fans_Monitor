@@ -9,6 +9,11 @@
   
   *日期
   2018/11/1
+  
+  
+  *2022/4/21 删除了失效的API，仅保留基础功能，足够入门使用
+  *在2021年12月仍然可用，不确保长期正常运行
+  *by koswopond
 */
 
 //  硬件接线说明
@@ -50,9 +55,9 @@
 // =======================================================================
 // 配置信息
 // =======================================================================
-const char* ssid     = "Cosmos";                 // WiFi名
-const char* password = "abc123456";            //WiFi密码
-String channelId = "96458132";                   //bilibili UID
+const char* ssid     = "wifiname";                 // WiFi名
+const char* password = "password";            //WiFi密码
+String channelId = "24427887";                   //bilibili UID
 long utcOffset = 8;                              //时区，默认 +8 为东八区（中国北京）
 // =======================================================================
 
@@ -65,7 +70,8 @@ void setup()
   WiFi.enableAP(false);     //关闭AP热点
   Serial.print("Connecting WiFi ");
   WiFi.begin(ssid, password);
-  printStringWithShift(" WiFi ...~", 15, font, ' ');
+  printStringWithShift(" CCCP .~", 15, font, ' ');     //开机文字
+  delay(500);      //开机文字显示时长
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print("."); delay(500);
   }
@@ -86,62 +92,74 @@ long localMillisAtUpdate = 0;
 int h, m, s;
 String date;
 
+
 void loop()
 {
   if (cnt <= 0) {
-    if ((getYTData() == 0) && (getVideoData() == 0) && (getplayData() == 0)) {
+    if ((getYTData() == 0)) {
       cnt = 1;  // data is refreshed every 50 loops
-      if (subscriberCount1h < 0) {
-        time1h = time24h = millis();
-        subscriberCount1h = subscriberCount24h = subscriberCount;
-        viewCount24h = viewCount;
-      }
-      if (millis() - time1h > 1000 * 60 * 60) {
-        time1h = millis();
-        subscriberCount1h = subscriberCount;
-      }
-      if (millis() - time24h > 1000 * 60 * 60 * 24) {
-        time24h = millis();
-        subscriberCount24h = subscriberCount;
-        viewCount24h = viewCount;
-      }
-      subsGain1h = subscriberCount - subscriberCount1h;
-      subsGain24h = subscriberCount - subscriberCount24h;
-      viewsGain24h = viewCount - viewCount24h;
     }
   }
   cnt--;
   updateTime();
-  int del = 3000;
-  int scrollDel = 20;
+  int del = 4000;
+  int scrollDel = 50;
+  int scroll = 25;
+  int rollslow = 75;
+  int rollfast = 35;
   char txt[10];
 
+
+
+
+
   //+++++++++++++++++++++粉丝数+++++++++++++++++++++//
-  printStringWithShift("  Fans: ", scrollDel, font, ' '); // eng
+  printStringWithShift("  Bili   ", scrollDel, font, ' '); 
+  delay(4000);
+  printStringWithShift(" koswo ", scrollDel, font, ' '); 
+  delay(4000);
+  printStringWithShift("  Fans:  ", scrollDel, font, ' ');
+  delay(4000);
+  printValueWithShift(subscriberCount, scrollDel, 0);
+  delay(del);     // 以下内容为一个插入循环播放的文字（仅限英文）的例子，使用最简单的方法，没有使用门槛，可自行修改
+  printStringWithShift(" Wife:0 ", scrollDel, font, ' '); 
+  delay(5000);
+  printStringWithShift("   Never gonna give yo up ", scroll, font, ' '); 
+  delay(500);
+  printStringWithShift("   Never gonna let you down   ", scroll, font, ' '); 
+  delay(500);
+  printStringWithShift("   Never gonna run around  ", scroll, font, ' '); 
+  delay(300);
+  printStringWithShift("   and desert you ", scroll, font, ' '); 
+  delay(500);
+  printStringWithShift("   Never gonna make you cry  ", scroll, font, ' '); 
+  delay(500);
+  printStringWithShift("   Never gonna say goodbye ", scroll, font, ' '); 
+  delay(500);
+  printStringWithShift("   Never gonna tell a lie ", scroll, font, ' '); 
+  delay(300);
+  printStringWithShift("   and hurt you ", scroll, font, ' '); 
+  delay(500);
+  printStringWithShift("  Bili   ", scrollDel, font, ' '); 
+  delay(4000);
+  printStringWithShift(" koswo ", scrollDel, font, ' '); 
+  delay(3000);
+  printStringWithShift("  Fans:  ", scrollDel, font, ' ');
+  delay(3000);
   printValueWithShift(subscriberCount, scrollDel, 0);
   delay(del);
-  //+++++++++++++++++++++1小时增加粉丝数（无则不显示）+++++++++++++++++++++//
-  if (subsGain1h > 0) {
-    printStringWithShift("  Fans gain 1h: ", scrollDel, font, ' '); // eng
-    printValueWithShift(subsGain1h, scrollDel, 1);
-    delay(del);
-  }
-  //+++++++++++++++++++++24小时粉丝数（无则不显示）+++++++++++++++++++++//
-  if (subsGain24h > 0) {
-    printStringWithShift("  Fans gain 24h: ", scrollDel, font, ' '); // eng
-    printValueWithShift(subsGain24h, scrollDel, 1);
-    delay(del);
-  }
-  //+++++++++++++++++++++直播数（无则不显示）+++++++++++++++++++++//	
-  if (viewCount != viewCount24h) {
-    printStringWithShift("  Live: ", scrollDel, font, ' '); // eng
-    printValueWithShift(viewCount, scrollDel, 0);
-    delay(del);
-  }
-  //+++++++++++++++++++++播放数+++++++++++++++++++++//
-  printStringWithShift("  Play: ", scrollDel, font, ' '); // eng
-  printValueWithShift(videoCount, scrollDel, 0);
+  printStringWithShift(" Wife:0 ", scrollDel, font, ' ');
+  delay(3000);
+  printStringWithShift(" In solitude, where we are least alone.  ", rollfast, font, ' ');
+  delay(500);
+  printStringWithShift("  Sora ", rollfast, font, ' ');
+  delay(800);
+  printStringWithShift("  Fans:  ", scrollDel, font, ' ');
+  delay(3000);
+  printValueWithShift(subscriberCount, scrollDel, 0);
   delay(del);
+  printStringWithShift(" Love is zero, but zreo is the start. ", rollfast, font, ' ');
+  delay(500);
   //+++++++++++++++++++++时间（根据前面设定的时区决定）+++++++++++++++++++++//
   sprintf(txt, "    %02d:%02d  ", h, m);
   printStringWithShift(txt, scrollDel, font, ' '); // real time
@@ -284,6 +302,7 @@ void printValueWithShift(long val, int shiftDelay, int sign)
   }
 }
 
+
 // =====================订阅数==================================================
 
 const char *ytHost = "api.bilibili.com";
@@ -337,113 +356,6 @@ int getYTData()
   subscriberCount = root["data"]["follower"];
   return 0;
 }
-
-// =====================直播参数==================================================
-
-const char *videoHost = "api.live.bilibili.com";
-
-int getVideoData()
-{
-  WiFiClientSecure client;
-  Serial.print("connecting to "); Serial.println(videoHost);
-  if (!client.connect(videoHost, 443)) {
-    Serial.println("connection failed");
-    return -1;
-  }
-  String cmd = String("GET /room/v1/Room/getRoomInfoOld?mid=") + channelId + " HTTP/1.1\r\n" +
-               "Host: " + videoHost + "\r\nUser-Agent: ESP8266/1.1\r\nConnection: close\r\n\r\n";
-  client.print(cmd);
-
-  int repeatCounter = 10;
-  while (!client.available() && repeatCounter--) {
-    Serial.println("y."); delay(500);
-  }
-  String line, buf = "";
-  int startJson = 0, dateFound = 0;
-  while (client.connected() && client.available()) {
-    line = client.readStringUntil('\n');
-    if (line[0] == '{') startJson = 1;
-    if (startJson) {
-      for (int i = 0; i < line.length(); i++)
-        if (line[i] == '[' || line[i] == ']') line[i] = ' ';
-      buf += line + "\n";
-    }
-    if (!dateFound && line.startsWith("Date: ")) {
-      dateFound = 1;
-      date = line.substring(6, 22);
-      h = line.substring(23, 25).toInt();
-      m = line.substring(26, 28).toInt();
-      s = line.substring(29, 31).toInt();
-      localMillisAtUpdate = millis();
-      localEpoc = (h * 60 * 60 + m * 60 + s);
-    }
-  }
-  client.stop();
-
-  DynamicJsonBuffer jsonBuf;
-  JsonObject &root = jsonBuf.parseObject(buf);
-  if (!root.success()) {
-    Serial.println("parseObject() failed");
-    printStringWithShift("json error!", 30, font, ' ');
-    delay(10);
-    return -1;
-  }
-  viewCount = root["data"]["online"];
-  return 0;
-}
-// =====================播放数参数==================================================
-
-const char *playHost = "api.bilibili.com";
-
-int getplayData()
-{
-  WiFiClientSecure client;
-  Serial.print("connecting to "); Serial.println(playHost);
-  if (!client.connect(playHost, 443)) {
-    Serial.println("connection failed");
-    return -1;
-  }
-  String cmd = String("GET /x/space/upstat?mid=") + channelId + " HTTP/1.1\r\n" +
-               "Host: " + playHost + "\r\nUser-Agent: ESP8266/1.1\r\nConnection: close\r\n\r\n";
-  client.print(cmd);
-
-  int repeatCounter = 10;
-  while (!client.available() && repeatCounter--) {
-    Serial.println("y."); delay(500);
-  }
-  String line, buf = "";
-  int startJson = 0, dateFound = 0;
-  while (client.connected() && client.available()) {
-    line = client.readStringUntil('\n');
-    if (line[0] == '{') startJson = 1;
-    if (startJson) {
-      for (int i = 0; i < line.length(); i++)
-        if (line[i] == '[' || line[i] == ']') line[i] = ' ';
-      buf += line + "\n";
-    }
-    if (!dateFound && line.startsWith("Date: ")) {
-      dateFound = 1;
-      date = line.substring(6, 22);
-      h = line.substring(23, 25).toInt();
-      m = line.substring(26, 28).toInt();
-      s = line.substring(29, 31).toInt();
-      localMillisAtUpdate = millis();
-      localEpoc = (h * 60 * 60 + m * 60 + s);
-    }
-  }
-  client.stop();
-
-  DynamicJsonBuffer jsonBuf;
-  JsonObject &root = jsonBuf.parseObject(buf);
-  if (!root.success()) {
-    Serial.println("parseObject() failed");
-    printStringWithShift("json error!", 30, font, ' ');
-    delay(10);
-    return -1;
-  }
-  videoCount = root["data"]["archive"]["view"];
-  return 0;
-}
 // =======================================================================
 
 void updateTime()
@@ -454,5 +366,3 @@ void updateTime()
   m = (epoch % 3600) / 60;
   s = epoch % 60;
 }
-
-// =======================================================================

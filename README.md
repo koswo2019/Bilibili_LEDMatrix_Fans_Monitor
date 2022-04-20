@@ -1,6 +1,6 @@
 <h1>Bilibili点阵显示器</h1>
 <hr>
-<p>原作者：咸鱼Cosmos 欢迎订阅我的频道</p>
+<p>原作者：咸鱼Cosmos</p>
 <p>Demo：https://www.bilibili.com/video/av34606451  </p>
 <p>进行了一些修改，删除了因为API变动无法运行的内容。添加了除3D打印外其他的外壳方案 </p>
 <hr>
